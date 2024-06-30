@@ -1,0 +1,43 @@
+---
+    - name: create webserver directory
+      file:
+        path: /webserver/
+        state: directory
+        mode: '0755'
+
+    - name: Copy dockerfile
+      copy:
+        src: files/Dockerfile
+        dest:  /webserver/images/php/
+
+    - name: Copy php.ini
+      copy:
+        src: files/php.ini
+        dest:  /webserver/images/php/php.ini
+       
+    - name: Copy nginx config
+      copy:
+        src: files/nginx.conf
+        dest:  /webserver/conf.d/     
+
+    - name: Create /www/html directory
+      file:
+        path: /webserver/www/html
+        state: directory
+        mode: '0755'
+
+    - name: Copy index.php
+      copy:
+        src: files/index.php
+        dest:  /webserver/www/html/index.php
+
+    
+    - name: Copy docker-compose.yml
+      copy:
+        src: files/docker-compose.yml
+        dest:  /webserver/docker-compose.yml
+
+    - name: Create and start services
+      community.docker.docker_compose_v2:
+        project_src: /webserver/
+      register: output    
